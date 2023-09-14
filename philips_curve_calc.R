@@ -28,10 +28,10 @@ ggplot(dat_infl, aes(x = unrate, y = infl)) +
   theme_minimal()
 
 #JAPAN
-dat_can <- c("LRUN64TTJPM156S", "JPNCPIALLMINMEI") %>% 
+dat_jpn <- c("LRUN64TTJPM156S", "JPNCPIALLMINMEI") %>% 
   tq_get(get = "economic.data", from ="1960-01-01")
 
-dat_infl_can <- dat_can %>% 
+dat_infl_jpn <- dat_jpn %>% 
   pivot_wider(names_from = symbol, values_from = price) %>% 
   mutate(infl = 100 * (JPNCPIALLMINMEI - lag(JPNCPIALLMINMEI, 12)) / lag(JPNCPIALLMINMEI, 12), 
          infl_change = infl - lag(infl, 1),
@@ -39,7 +39,7 @@ dat_infl_can <- dat_can %>%
   drop_na() %>% 
   rename(unrate = LRUN64TTJPM156S)
 
-ggplot(dat_infl_can, aes(x = unrate, y = infl)) +
+ggplot(dat_infl_jpn, aes(x = unrate, y = infl)) +
   geom_point(aes(color = decade), size =2 , alpha =.5) +
   geom_smooth(se = F, method = "gam", aes (color = decade), formula = y ~ poly(x, 2))+
   scale_color_brewer(palette = "Set1") +
