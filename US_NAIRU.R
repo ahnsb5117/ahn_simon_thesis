@@ -8,7 +8,7 @@ library(mFilter) #Library for HP filter
 library(rollRegres) #Library for HP filter
 
 
-data_pc <- pdfetch_FRED(c("GDPC1", "UNRATE", "CPIAUCSL", "PPIACO", "CPILFESL"))
+data_pc <- pdfetch_FRED(c("GDPC1", "UNRATE", "CPIAUCSL", "CPILFESL"))
 # Convert data to quarterly frequency
 data_pc <- to.period(data_pc, period = "quarter", OHLC = FALSE)
 #View(data_pc)
@@ -18,9 +18,8 @@ data_pc$lgdp <- log(data_pc$GDPC1) # Take logs
 hp_gdp <- hpfilter(data_pc$lgdp, freq = 1600, type="lambda")
 data_pc$gdpgap <- 100*hp_gdp$cycle
 data_pc$l_cpi <- log(data_pc$CPIAUCSL)
-data_pc$l_cpi_core <- log(data_pc$CPILFESL)
-data_pc$l_ppiaco <- log(data_pc$PPIACO)
-data_pc$unrate <- (data_pc$UNRATE)
+data_pc$l_cpi_core <- log(data_pc$CPILFESL) # Consumer Price Index of All Items in Japan
+data_pc$unrate <- (data_pc$UNRATE) # seasonally adjusted
 
 
 #Quarterly inflation, annualized
@@ -58,7 +57,7 @@ plot.xts(data1$un_pi_gap)
 #Get trend using the HP filter with high lambda (much higner than for business cycles frequencies)
 data1_1 <- na.omit(data1)
 hp_un_pi_gap <- hpfilter(data1_1$un_pi_gap, freq = 100, type="lambda") 
-
+  
 hpgap_dat <- data.frame(hp_un_pi_gap$trend) %>% 
   tibble::rownames_to_column("date") %>% 
   dplyr::rename(trend = un_pi_gap)
@@ -68,9 +67,11 @@ data2 <- data.frame(data1) %>%
 
 data3 <- merge(hpgap_dat, data2, by ="date") %>% 
   tibble::column_to_rownames("date")
-
+  
 data4 <- as.xts(data3)
 
 data5 <- na.omit(data4)
-plot.xts(data5$unrate, col = "black", lwd = 2)
+plot.xts(data5$unrate, col = "black", lwd = 2, main = "US Unemployment with HP Filter", main.timespan = FALSE)
 addSeries(data5$trend, on = 1, col = "red", lwd = 2 )
+
+
