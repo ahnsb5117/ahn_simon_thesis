@@ -2,6 +2,8 @@ library(xts)
 library(pdfetch) #Library for loading FRED data
 library(ggplot2) #Library for plotting
 library(mFilter) #Library for HP filter
+library(rollRegres) #Library for Regression 
+
 
 #data_pc <- pdfetch_FRED(c("GDPC1", "UNRATE", "CPIAUCSL", "CPILFESL"))
 data_pc <- pdfetch_FRED(c("JPNRGDPEXP", "LRUN64TTJPM156S", "JPNCPIALLMINMEI", "JPNCPICORMINMEI"))
@@ -48,7 +50,7 @@ pc_rolling <- roll_regres(data1$infgap ~ data1$unrate + data1$ss1, width = 40, d
 data1$un_pi_gap <- data1$unrate + data1$infgap/3
 #Note that 3 was the estimated coefficient of unemployment rate in model 3.
 plot.xts(data1$un_pi_gap)
-#Get trend using the HP filter with high lambda (much higner than for business cycles frequencies)
+#Get trend using the HP filter with high lambda (much higher than business cycles frequencies)
 data1_1 <- na.omit(data1)
 hp_un_pi_gap <- hpfilter(data1_1$un_pi_gap, freq = 100, type="lambda") 
 

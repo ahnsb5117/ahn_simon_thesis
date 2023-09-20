@@ -2,6 +2,7 @@ library(xts)
 library(pdfetch) #Library for loading FRED data
 library(ggplot2) #Library for plotting
 library(mFilter) #Library for HP filter
+library(rollRegres) #Library for Regression 
 
 #data_pc <- pdfetch_FRED(c("GDPC1", "UNRATE", "CPIAUCSL", "CPILFESL"))
 data_pc <- pdfetch_FRED(c("CLVMNACSCAB1GQDE", "LRUN64TTDEQ156S", "CPALTT01DEM659N", "CPGRLE01DEM657N"))

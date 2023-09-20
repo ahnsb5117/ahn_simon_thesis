@@ -5,18 +5,18 @@ library(mFilter) #Library for HP filter
 library(rollRegres) #Library for Regression 
 
 #data_pc <- pdfetch_FRED(c("GDPC1", "UNRATE", "CPIAUCSL", "CPILFESL"))
-data_pc <- pdfetch_FRED(c("NGDPRSAXDCCAQ", "LRUN64TTCAM156S", "CANCPIALLMINMEI", "CANCPICORMINMEI"))
+data_pc <- pdfetch_FRED(c("NGDPRSAXDCFRQ", "LRUN64TTFRQ156S", "FRACPIALLMINMEI", "FRACPICORMINMEI"))
 # Convert data to quarterly frequency
 data_pc <- to.period(data_pc, period = "quarter", OHLC = FALSE)
 #View(data_pc)
 
 #Transformations
-data_pc$lgdp <- log(data_pc$NGDPRSAXDCCAQ) # Take logs
+data_pc$lgdp <- log(data_pc$NGDPRSAXDCFRQ) # Take logs
 hp_gdp <- hpfilter(data_pc$lgdp, freq = 1600, type="lambda")
 data_pc$gdpgap <- 100*hp_gdp$cycle
-data_pc$l_cpi <- log(data_pc$CANCPIALLMINMEI) # Consumer Price Index of All Items in Canada
-data_pc$l_cpi_core <- log(data_pc$CANCPICORMINMEI)  # Consumer Price Index of All Items Non-food and Non-energy in Canada
-data_pc$unrate <- (data_pc$LRUN64TTCAM156S)# seasonally adjusted
+data_pc$l_cpi <- log(data_pc$FRACPIALLMINMEI) # Consumer Price Index of All Items in Canada
+data_pc$l_cpi_core <- log(data_pc$FRACPICORMINMEI)  # Consumer Price Index of All Items Non-food and Non-energy in Canada
+data_pc$unrate <- (data_pc$LRUN64TTFRQ156S)# seasonally adjusted
 
 #Quarterly inflation, annualized
 data_pc$inflation_q = 4*100*diff(data_pc$l_cpi)
@@ -67,6 +67,5 @@ data3 <- merge(hpgap_dat, data2, by ="date") %>%
 data4 <- as.xts(data3)
 
 data5 <- na.omit(data4)
-plot.xts(data5$unrate, col = "black", lwd = 2 , main = "Canada Unemployment with HP Filter", main.timespan = FALSE)
+plot.xts(data5$unrate, col = "black", lwd = 2 , main = "France Unemployment with HP Filter", main.timespan = FALSE)
 addSeries(data5$trend, on = 1, col = "red", lwd = 2 )
-
