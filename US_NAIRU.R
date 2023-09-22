@@ -8,7 +8,8 @@ library(mFilter) #Library for HP filter
 library(rollRegres) #Library for Regression 
 
 
-data_pc <- pdfetch_FRED(c("GDPC1", "UNRATE", "CPIAUCSL", "CPILFESL"))
+data_pc_raw <- pdfetch_FRED(c("GDPC1", "UNRATE", "CPIAUCSL", "CPILFESL"))
+data_pc <- data_pc_raw["2008-01-01/2023-04-01"]
 # Convert data to quarterly frequency
 data_pc <- to.period(data_pc, period = "quarter", OHLC = FALSE)
 #View(data_pc)
