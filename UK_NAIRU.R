@@ -13,12 +13,12 @@ data_pc <- to.period(data_pc, period = "quarter", OHLC = FALSE)
 #View(data_pc)
 
 #Transformations
-data_pc$lgdp <- log(data_pc$NGDPRSAXDCITQ) # Take logs
+data_pc$lgdp <- log(data_pc$NGDPRSAXDCGBQ) # Take logs
 hp_gdp <- hpfilter(data_pc$lgdp, freq = 1600, type="lambda")
 data_pc$gdpgap <- 100*hp_gdp$cycle
-data_pc$l_cpi <- log(data_pc$ITACPIALLMINMEI) # Consumer Price Index of All Items in Canada
-data_pc$l_cpi_core <- log(data_pc$ITACPICORMINMEI)  # Consumer Price Index of All Items Non-food and Non-energy in Canada
-data_pc$unrate <- (data_pc$LRUN64TTITQ156S)# seasonally adjusted
+data_pc$l_cpi <- log(data_pc$GBRCPIALLMINMEI) # Consumer Price Index of All Items in UK
+data_pc$l_cpi_core <- log(data_pc$GBRCPICORMINMEI)  # Consumer Price Index of All Items Non-food and Non-energy in UK
+data_pc$unrate <- (data_pc$LRUN64TTGBQ156S)# seasonally adjusted
 
 #Quarterly inflation, annualized
 data_pc$inflation_q = 4*100*diff(data_pc$l_cpi)
@@ -49,7 +49,7 @@ summary(model3)
 data1 <- na.omit(data_pc)
 
 pc_rolling <- roll_regres(data1$infgap ~ data1$unrate + data1$ss1, width = 40, do_downdates = TRUE)
-data1$un_pi_gap <- data1$unrate + data1$infgap/3
+data1$un_pi_gap <- data1$unrate + data1$infgap/-8.84
 #Note that 3 was the estimated coefficient of unemployment rate in model 3.
 plot.xts(data1$un_pi_gap)
 #Get trend using the HP filter with high lambda (much higner than for business cycles frequencies)
@@ -69,5 +69,5 @@ data3 <- merge(hpgap_dat, data2, by ="date") %>%
 data4 <- as.xts(data3)
 
 data5 <- na.omit(data4)
-plot.xts(data5$unrate, col = "black", lwd = 2 , main = "UK Unemployment with HP Filter", main.timespan = FALSE)
+plot.xts(data5$unrate, col = "black", lwd = 2 , main = "U.K. NAIRU", main.timespan = FALSE)
 addSeries(data5$trend, on = 1, col = "red", lwd = 2 )

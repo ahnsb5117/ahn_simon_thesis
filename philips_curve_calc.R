@@ -10,7 +10,7 @@ dat_us <- c("UNRATE", "CPIAUCSL") %>%
 
 #US
 dat_us <- c("UNRATE", "CPIAUCSL") %>% 
-  tq_get(get = "economic.data", from ="1948-12-31")
+  tq_get(get = "economic.data", from ="2008-01-01")
 
 dat_infl <- dat_us %>% 
   pivot_wider(names_from = symbol, values_from = price) %>% 

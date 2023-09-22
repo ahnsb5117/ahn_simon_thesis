@@ -7,7 +7,7 @@ library(reshape2)
 
 dat_us <- c("USACPALTT01CTGYM", "CPALTT01GBM659N", "DEUCPALTT01CTGYM", "CPALTT01FRM659N", 
             "ITACPALTT01CTGYM", "CPALTT01CAM659N", "FPCPITOTLZGJPN") %>% 
-  tq_get(get = "economic.data", from ="2010-12-31") %>% 
+  tq_get(get = "economic.data", from ="2008-01-01") %>% 
   mutate(symbol = recode(symbol,
                          "USACPALTT01CTGYM" = "U.S.",
                          "CPALTT01GBM659N" = "U.K.",
@@ -23,5 +23,4 @@ ggplot(dat_us, aes(x=date, y=price, color= symbol, group=symbol )) +
   theme(axis.text.x = element_text(angle = 60, hjust = 1))
 
 
-ggplot(dat_infl, aes(index, value)) +
-  geom_line(aes(colour = series))
+

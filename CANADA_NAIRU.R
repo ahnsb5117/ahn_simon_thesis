@@ -69,6 +69,6 @@ data3 <- merge(hpgap_dat, data2, by ="date") %>%
 data4 <- as.xts(data3)
 
 data5 <- na.omit(data4)
-plot.xts(data5$unrate, col = "black", lwd = 2 , main = "Canada Unemployment with HP Filter", main.timespan = FALSE)
+plot.xts(data5$unrate, col = "black", lwd = 2 , main = "Canada NAIRU", main.timespan = FALSE)
 addSeries(data5$trend, on = 1, col = "red", lwd = 2 )
 
