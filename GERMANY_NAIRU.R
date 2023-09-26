@@ -5,7 +5,7 @@ library(mFilter) #Library for HP filter
 library(rollRegres) #Library for Regression 
 
 #data_pc <- pdfetch_FRED(c("GDPC1", "UNRATE", "CPIAUCSL", "CPILFESL"))
-data_pc_raw <- pdfetch_FRED(c("CLVMNACSCAB1GQDE", "LRUN64TTDEQ156S", "CPALTT01DEM659N", "CPGRLE01DEM657N"))
+data_pc_raw <- pdfetch_FRED(c("CLVMNACSCAB1GQDE", "LRUN64TTDEQ156S", "DEUCPIALLMINMEI", "DEUCPICORMINMEI"))
 #Date adjustment
 data_pc <- data_pc_raw["2003-01-01/2023-04-01"]
 # Convert data to quarterly frequency
@@ -16,8 +16,8 @@ data_pc <- to.period(data_pc, period = "quarter", OHLC = FALSE)
 data_pc$lgdp <- log(data_pc$CLVMNACSCAB1GQDE) # Take logs
 hp_gdp <- hpfilter(data_pc$lgdp, freq = 1600, type="lambda")
 data_pc$gdpgap <- 100*hp_gdp$cycle
-data_pc$l_cpi <- log(data_pc$CPALTT01DEM659N) # Consumer Price Index of All Items in Canada
-data_pc$l_cpi_core <- log(data_pc$CPGRLE01DEM657N)  # Consumer Price Index of All Items Non-food and Non-energy in Canada
+data_pc$l_cpi <- (data_pc$DEUCPIALLMINMEI) # Consumer Price Index of All Items in Canada
+data_pc$l_cpi_core <- log(data_pc$DEUCPICORMINMEI)  # Consumer Price Index of All Items Non-food and Non-energy in Canada
 data_pc$unrate <- (data_pc$LRUN64TTDEQ156S)# seasonally adjusted
 
 #Quarterly inflation, annualized
@@ -49,7 +49,7 @@ summary(model3)
 data1 <- na.omit(data_pc)
 
 pc_rolling <- roll_regres(data1$infgap ~ data1$unrate + data1$ss1, width = 40, do_downdates = TRUE)
-data1$un_pi_gap <- data1$unrate + data1$infgap/3
+data1$un_pi_gap <- data1$unrate + data1$infgap/1165.81
 #Note that 3 was the estimated coefficient of unemployment rate in model 3.
 plot.xts(data1$un_pi_gap)
 #Get trend using the HP filter with high lambda (much higner than for business cycles frequencies)
@@ -58,7 +58,7 @@ hp_un_pi_gap <- hpfilter(data1_1$un_pi_gap, freq = 100, type="lambda")
 
 hpgap_dat <- data.frame(hp_un_pi_gap$trend) %>% 
   tibble::rownames_to_column("date") %>% 
-  dplyr::rename(trend = un_pi_gap)
+  dplyr::rename(nairu = un_pi_gap)
 
 data2 <- data.frame(data1) %>% 
   tibble::rownames_to_column("date")
@@ -69,5 +69,10 @@ data3 <- merge(hpgap_dat, data2, by ="date") %>%
 data4 <- as.xts(data3)
 
 data5 <- na.omit(data4)
-plot.xts(data5$unrate, col = "black", lwd = 2 , main = "Germnay NAIRU", main.timespan = FALSE)
-addSeries(data5$trend, on = 1, col = "red", lwd = 2 )
+plot.xts(data5$unrate, col = "black", lwd = 3, main = "Germany NAIRU", main.timespan = FALSE, lty = 3) #unemployment rate
+addSeries(data5$nairu, on = 1, col = "red", lwd = 1) # NAIRU
+addLegend("topleft", on=1, 
+          legend.names = c("Unemployment Rate", "NAIRU"), 
+          lty=c(3, 1), lwd=c(3, 1),
+          col=c("black", "red"))
+

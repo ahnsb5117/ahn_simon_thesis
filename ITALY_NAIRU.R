@@ -58,7 +58,7 @@ hp_un_pi_gap <- hpfilter(data1_1$un_pi_gap, freq = 100, type="lambda")
 
 hpgap_dat <- data.frame(hp_un_pi_gap$trend) %>% 
   tibble::rownames_to_column("date") %>% 
-  dplyr::rename(trend = un_pi_gap)
+  dplyr::rename(nairu = un_pi_gap)
 
 data2 <- data.frame(data1) %>% 
   tibble::rownames_to_column("date")
@@ -69,5 +69,9 @@ data3 <- merge(hpgap_dat, data2, by ="date") %>%
 data4 <- as.xts(data3)
 
 data5 <- na.omit(data4)
-plot.xts(data5$unrate, col = "black", lwd = 2 , main = "Italy NAIRU", main.timespan = FALSE)
-addSeries(data5$trend, on = 1, col = "red", lwd = 2 )
+plot.xts(data5$unrate, col = "black", lwd = 3, main = "Italy NAIRU", main.timespan = FALSE, lty = 3) #unemployment rate
+addSeries(data5$nairu, on = 1, col = "red", lwd = 1) # NAIRU
+addLegend("topleft", on=1, 
+          legend.names = c("Unemployment Rate", "NAIRU"), 
+          lty=c(3, 1), lwd=c(3, 1),
+          col=c("black", "red"))
