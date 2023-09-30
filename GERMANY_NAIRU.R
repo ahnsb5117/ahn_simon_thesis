@@ -16,8 +16,8 @@ data_pc <- to.period(data_pc, period = "quarter", OHLC = FALSE)
 data_pc$lgdp <- log(data_pc$CLVMNACSCAB1GQDE) # Take logs
 hp_gdp <- hpfilter(data_pc$lgdp, freq = 1600, type="lambda")
 data_pc$gdpgap <- 100*hp_gdp$cycle
-data_pc$l_cpi <- (data_pc$DEUCPIALLMINMEI) # Consumer Price Index of All Items in Canada
-data_pc$l_cpi_core <- log(data_pc$DEUCPICORMINMEI)  # Consumer Price Index of All Items Non-food and Non-energy in Canada
+data_pc$l_cpi <- (data_pc$DEUCPIALLMINMEI) # Consumer Price Index of All Items in Germany
+data_pc$l_cpi_core <- log(data_pc$DEUCPICORMINMEI)  # Consumer Price Index of All Items Non-food and Non-energy in Germany
 data_pc$unrate <- (data_pc$LRUN64TTDEQ156S)# seasonally adjusted
 
 #Quarterly inflation, annualized
@@ -69,7 +69,7 @@ data3 <- merge(hpgap_dat, data2, by ="date") %>%
 data4 <- as.xts(data3)
 
 data5 <- na.omit(data4)
-plot.xts(data5$unrate, col = "black", lwd = 3, main = "Germany NAIRU", main.timespan = FALSE, lty = 3) #unemployment rate
+plot.xts(data5$unrate, col = "black", lwd = 3, main = "Germany NAIRU", main.timespan = FALSE, lty = 3, ylim = c(2, 14)) #unemployment rate
 addSeries(data5$nairu, on = 1, col = "red", lwd = 1) # NAIRU
 addLegend("topleft", on=1, 
           legend.names = c("Unemployment Rate", "NAIRU"), 

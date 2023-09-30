@@ -70,7 +70,7 @@ data4 <- as.xts(data3)
 
 
 data5 <- na.omit(data4)
-plot.xts(data5$unrate, col = "black", lwd = 3, main = "U.K. NAIRU", main.timespan = FALSE, lty = 3) #unemployment rate
+plot.xts(data5$unrate, col = "black", lwd = 3, main = "U.K. NAIRU", main.timespan = FALSE, lty = 3, ylim = c(2, 14)) #unemployment rate
 addSeries(data5$nairu, on = 1, col = "red", lwd = 1) # NAIRU
 addLegend("topleft", on=1, 
           legend.names = c("Unemployment Rate", "NAIRU"), 
