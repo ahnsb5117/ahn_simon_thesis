@@ -69,8 +69,8 @@ data3 <- merge(hpgap_dat, data2, by ="date") %>%
 data4 <- as.xts(data3)
 
 data5 <- na.omit(data4)
-plot.xts(data5$unrate, col = "black", lwd = 2 , main = "Canada NAIRU", main.timespan = FALSE, lty = 3, ylim = c(2, 14))
-addSeries(data5$nairu, on = 1, col = "red", lwd = 2 )
+plot.xts(data5$unrate, col = "black", lwd = 3 , main = "Canada NAIRU", main.timespan = FALSE, lty = 3, ylim = c(2, 14))
+addSeries(data5$nairu, on = 1, col = "red", lwd = 1)
 addLegend("topleft", on=1, 
           legend.names = c("Unemployment Rate", "NAIRU"), 
           lty=c(3, 1), lwd=c(3, 1),
