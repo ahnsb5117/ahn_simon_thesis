@@ -49,8 +49,8 @@ summary(model3)
 data1 <- na.omit(data_pc)
 
 pc_rolling <- roll_regres(data1$infgap ~ data1$unrate + data1$ss1, width = 40, do_downdates = TRUE)
-data1$un_pi_gap <- data1$unrate + data1$infgap/14.44
-#Note that 1.0511 was the estimated coefficient of unemployment in model 3.
+data1$un_pi_gap <- data1$unrate + data1$infgap/(0.1444*100)
+#Note that 0.1444 was the estimated coefficient of unemployment in model 3.
 plot.xts(data1$un_pi_gap)
 #Get trend using the HP filter with high lambda (much higner than for business cycles frequencies)
 data1_1 <- na.omit(data1)
@@ -70,7 +70,7 @@ data4 <- as.xts(data3)
 
 
 data5 <- na.omit(data4)
-plot.xts(data5$unrate, col = "black", lwd = 3, main = "U.K. NAIRU", main.timespan = FALSE, lty = 3, ylim = c(2, 14)) #unemployment rate
+plot.xts(data5$unrate, col = "black", lwd = 3, main = "The U.K. NAIRU", main.timespan = FALSE, lty = 3, ylim = c(2, 14)) #unemployment rate
 addSeries(data5$nairu, on = 1, col = "red", lwd = 1) # NAIRU
 addLegend("topleft", on=1, 
           legend.names = c("Unemployment Rate", "NAIRU"), 

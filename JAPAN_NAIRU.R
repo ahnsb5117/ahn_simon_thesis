@@ -53,8 +53,8 @@ summary(model3)
 data1 <- na.omit(data_pc)
 
 pc_rolling <- roll_regres(data1$infgap ~ data1$unrate + data1$ss1, width = 40, do_downdates = TRUE)
-data1$un_pi_gap <- data1$unrate + data1$infgap/0.583
-#Note that 0.583  was the estimated coefficient of supply shock in model 3.
+data1$un_pi_gap <- data1$unrate + data1$infgap/(0.00583*100)
+#Note that 0.00583  was the estimated coefficient of supply shock in model 3.
 plot.xts(data1$un_pi_gap)
 #Get trend using the HP filter with high lambda (much higher than business cycles frequencies)
 data1_1 <- na.omit(data1)
