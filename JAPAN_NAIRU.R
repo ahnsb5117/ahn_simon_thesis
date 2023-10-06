@@ -32,8 +32,12 @@ addSeries(data_pc$infexp, on = 1, col = "red", lwd = 2 )
 
 #Creating inflation gap
 data_pc$infgap <- data_pc$inflation_q-data_pc$infexp
-plot.xts(data_pc$inflation_q)
-addSeries(data_pc$infgap, on = 1, col = "red", lwd = 2 )
+plot.xts(data_pc$inflation_q, main = "Inflation Gap", ylim = c(-25, 15))
+addSeries(data_pc$infgap, on = 1, col = "red", lwd = 2)
+addLegend("topleft", on=1, 
+          legend.names = c("Quarterly Inflation", "Inflation Gap"), 
+          lty=c(1, 1), lwd=c(2, 2),
+          col=c("black", "red"))
 
 #Supply shocks
 data_pc$ss1 <- 4*diff(data_pc$l_cpi)*100 - 4*diff(data_pc$l_cpi_core)*100
@@ -49,8 +53,8 @@ summary(model3)
 data1 <- na.omit(data_pc)
 
 pc_rolling <- roll_regres(data1$infgap ~ data1$unrate + data1$ss1, width = 40, do_downdates = TRUE)
-data1$un_pi_gap <- data1$unrate + data1$infgap/6.599
-#Note that 3 was the estimated coefficient of unemployment rate in model 3.
+data1$un_pi_gap <- data1$unrate + data1$infgap/0.583
+#Note that 0.583  was the estimated coefficient of supply shock in model 3.
 plot.xts(data1$un_pi_gap)
 #Get trend using the HP filter with high lambda (much higher than business cycles frequencies)
 data1_1 <- na.omit(data1)
