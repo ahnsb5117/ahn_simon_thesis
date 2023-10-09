@@ -18,7 +18,7 @@ hp_gdp <- hpfilter(data_pc$lgdp, freq = 1600, type="lambda")
 data_pc$gdpgap <- 100*hp_gdp$cycle
 data_pc$l_cpi <- log(data_pc$ITACPIALLMINMEI) # Consumer Price Index of All Items in Italy
 data_pc$l_cpi_core <- log(data_pc$ITACPICORMINMEI)  # Consumer Price Index of All Items Non-food and Non-energy in Italy
-data_pc$unrate <- (data_pc$LRUN64TTITQ156S)# seasonally adjusted
+data_pc$unemployment_rate <- (data_pc$LRUN64TTITQ156S)# seasonally adjusted
 
 #Quarterly inflation, annualized
 data_pc$inflation_q = 4*100*diff(data_pc$l_cpi)
@@ -35,21 +35,21 @@ plot.xts(data_pc$inflation_q)
 addSeries(data_pc$infgap, on = 1, col = "red", lwd = 2 )
 
 #Supply shocks
-data_pc$ss1 <- 4*diff(data_pc$l_cpi)*100 - 4*diff(data_pc$l_cpi_core)*100
+data_pc$supply_shock <- 4*diff(data_pc$l_cpi)*100 - 4*diff(data_pc$l_cpi_core)*100
 
-model1 <- lm(infgap ~ unrate, data = data_pc)
+model1 <- lm(infgap ~ unemployment_rate, data = data_pc)
 summary(model1)
 model2 <- lm(infgap ~ 0 + gdpgap, data = data_pc)
 summary(model2)
-model3 <- lm(infgap ~ unrate + ss1, data = data_pc)
+model3 <- lm(infgap ~ unemployment_rate + supply_shock, data = data_pc)
 summary(model3)
 
 
 
 data1 <- na.omit(data_pc)
 
-pc_rolling <- roll_regres(data1$infgap ~ data1$unrate + data1$ss1, width = 40, do_downdates = TRUE)
-data1$un_pi_gap <- data1$unrate + data1$infgap/(0.02738*100)
+pc_rolling <- roll_regres(data1$infgap ~ data1$unemployment_rate + data1$supply_shock, width = 40, do_downdates = TRUE)
+data1$un_pi_gap <- data1$unemployment_rate + data1$infgap/(0.02738*100)
 #Note that 0.02738 was the estimated coefficient of unemployment rate in model 3.
 plot.xts(data1$un_pi_gap)
 #Get trend using the HP filter with high lambda (much higner than for business cycles frequencies)
@@ -69,7 +69,7 @@ data3 <- merge(hpgap_dat, data2, by ="date") %>%
 data4 <- as.xts(data3)
 
 data5 <- na.omit(data4)
-plot.xts(data5$unrate, col = "black", lwd = 3, main = "Italy NAIRU", main.timespan = FALSE, lty = 3, ylim = c(2, 14)) #unemployment rate
+plot.xts(data5$unemployment_rate, col = "black", lwd = 3, main = "Italy NAIRU", main.timespan = FALSE, lty = 3, ylim = c(2, 14)) #unemployment rate
 addSeries(data5$nairu, on = 1, col = "red", lwd = 1) # NAIRU
 addLegend("topleft", on=1, 
           legend.names = c("Unemployment Rate", "NAIRU"), 

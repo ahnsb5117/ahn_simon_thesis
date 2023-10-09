@@ -1,3 +1,14 @@
+---
+title: "work_sample"
+output: pdf_document
+date: "2023-10-08"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
 #install.packages(c("xts","pdfetch", "ggplot2", "mFilter"))
 
 
@@ -5,13 +16,16 @@ library(xts) # Library for plotting
 library(pdfetch) #Library for loading FRED data
 library(mFilter) #Library for HP filter
 library(rollRegres) #Library for regression 
+```
 
-
+```{r}
 data_pc_raw <- pdfetch_FRED(c("GDPC1", "UNRATE", "CPIAUCSL", "CPILFESL")) #API fetching from FRED
 data_pc <- data_pc_raw["2005-01-01/2020-04-01"] # Date Range
 data_pc <- to.period(data_pc, period = "quarter", OHLC = FALSE) # Convert data to quarterly frequency
 #View(data_pc)
+```
 
+```{r}
 #Transformations
 data_pc$lgdp <- log(data_pc$GDPC1) # Take logs
 hp_gdp <- hpfilter(data_pc$lgdp, freq = 1600, type="lambda")
@@ -23,7 +37,9 @@ data_pc$unemployment_rate <- (data_pc$UNRATE) # seasonally adjusted
 
 #Quarterly inflation, annualized
 data_pc$inflation_q = 4*100*diff(data_pc$l_cpi)
+```
 
+```{r}
 #Inflation expectations as an average of 4 past y-o-y inflation rates
 data_pc$infexp <- 1/4*(lag(data_pc$inflation, k=1) + lag(data_pc$inflation, k=2) + lag(data_pc$inflation, k=3) + lag(data_pc$inflation, k=4))
 
@@ -41,14 +57,18 @@ addLegend("topleft", on=1,
 
 #Supply shocks
 data_pc$supply_shock <- 4*diff(data_pc$l_cpi)*100 - 4*diff(data_pc$l_cpi_core)*100
+```
 
+```{r}
 model1 <- lm(infgap ~ unemployment_rate, data = data_pc)
 summary(model1)
 model2 <- lm(infgap ~ 0 + gdpgap, data = data_pc)
 summary(model2)
 model3 <- lm(infgap ~ unemployment_rate + supply_shock, data = data_pc)
 summary(model3)
+```
 
+```{r}
 data1 <- na.omit(data_pc)
 
 pc_rolling <- roll_regres(data1$infgap ~ data1$unemployment_rate + data1$supply_shock, width = 40, do_downdates = TRUE)
@@ -61,6 +81,9 @@ data1_1 <- na.omit(data1)
 hp_un_pi_gap <- hpfilter(data1_1$un_pi_gap, freq = 100, type="lambda") # lambda at 100
 hp_un_pi_gap_1000 <- hpfilter(data1_1$un_pi_gap, freq = 1000, type="lambda") # lambda at 1000
 
+```
+
+```{r}
 #data wrangling to adjust for hp filter rowname change 
 
 hpgap_dat <- data.frame(hp_un_pi_gap$trend) %>% 
@@ -76,7 +99,9 @@ data3 <- merge(hpgap_dat, data2, by ="date") %>%
 data4 <- as.xts(data3)
 
 data5 <- na.omit(data4)
+```
 
+```{r}
 #Plotting NAIRU
 plot.xts(data5$unemployment_rate, col = "black", lwd = 3, main = "The U.S. NAIRU", main.timespan = FALSE, lty = 3, ylim = c(2, 14)) #unemployment rate
 addSeries(data5$nairu, on = 1, col = "red", lwd = 1) # NAIRU
@@ -85,4 +110,4 @@ addLegend("topleft", on=1,
           lty=c(3, 1), lwd=c(3, 1),
           col=c("black", "red"))
 
-
+```
