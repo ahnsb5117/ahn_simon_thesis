@@ -103,3 +103,48 @@ addLegend("topleft", on=1,
 summary(model3)
 
 ```
+
+```{r}
+# Load the gt and flextable packages
+library(gt)
+library(flextable)
+
+# Create a data frame with the table data
+survey_data <- data.frame(
+  Item = c("Frequency of the survey", "Households or persons", "Age limit", "Reference for job search period", "Sample Size"),
+  U.S. = c("Monthly", "Households", "16 years and older civilians", "4 weeks", 60000),
+  Japan = c("Monthly", "Households", "15 years and older civilians", "4 weeks", 40000),
+  Canada = c("Monthly", "Households", "15 years and older civilians", "4 weeks", 56000),
+  E.U. = c("Monthly", "Households or persons", "15 years and older, includes military personnel and civilians", "4 weeks", 41000)
+)
+
+
+# Print the gt table as a flextable
+ft <- flextable(survey_data)
+ft <- set_table_properties(ft, layout = "autofit")
+
+# Print the table
+ft
+```
+
+```{r}
+# Load the gt package
+library(gt)
+
+# Create a data frame with the table data
+data <- data.frame(
+  Measure = c("Inflation measures for projections", "Monitored core inflation measures", "Others"),
+  `Federal Reserve Bank (U.S.)` = c("All items, Excl. food and energy", "Exclusion measures", "N/A"),
+  `Bank of Japan` = c("Excl. fresh food", "Excl. food and energy", "N/A"),
+  `European Central Bank` = c("All items, Excl. energy", "Excl. fresh food, Excl. food and energy, Excl. food and energy", "Estimates from dynamic factor models"),
+  `Bank of England` = c("Excl. energy", "Excl. unprocessed food and energy, Excl. food and energy", "Volatility adjusted CPI"),
+  `Bank of Canada` = c("All items", "Excl. food and energy, Excl. food, energy, and non-alcoholic beverage, Excl. eight of the most volatile component excluding the effect of change s indirect tax", "N/A")
+)
+
+
+ft <- flextable(data)
+
+# Print the table
+ft 
+
+```

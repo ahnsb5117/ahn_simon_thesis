@@ -45,7 +45,39 @@ model3 <- lm(infgap ~ unrate + ss1, data = data_pc)
 summary(model3)
 
 
+# Convert the coefficients part of the summary to a data frame
+coefficients_df <- tidy(model3)
 
+coefficients_df$significance <- ifelse(coefficients_df$p.value < 0.001, "***",
+                                       ifelse(coefficients_df$p.value < 0.01, "**",
+                                              ifelse(coefficients_df$p.value < 0.05, "*",
+                                                     "")))
+
+coefficients_df <- coefficients_df %>%
+  dplyr::rename( t.value = statistic)
+
+
+coefficients_df$estimate <- round(coefficients_df$estimate, 4)
+coefficients_df$std.error <- round(coefficients_df$std.error, 4)
+coefficients_df$t.value <- round(coefficients_df$t.value, 4)
+coefficients_df$p.value <- round(coefficients_df$p.value, 4)
+coefficients_df$term[coefficients_df$term == "(Intercept)"] <- "Intercept"
+coefficients_df$term[coefficients_df$term == "unemployment_rate"] <- "Unemployment Rate"
+coefficients_df$term[coefficients_df$term == "supply_shock"] <- "Supply Shock"
+
+# Create a gt table
+coefficients_table <- flextable(coefficients_df)
+
+# Add a caption note
+note_text <- "Signif. codes: 0 '***' 0.001 '**' 0.01 '*'"
+coefficients_table <- coefficients_table %>%
+  add_footer_lines(note_text) %>% 
+  fontsize(size = 8, part = "footer")
+
+# Print the table
+coefficients_table
+
+#getting rid of NA values
 data1 <- na.omit(data_pc)
 
 pc_rolling <- roll_regres(data1$infgap ~ data1$unrate + data1$ss1, width = 40, do_downdates = TRUE)

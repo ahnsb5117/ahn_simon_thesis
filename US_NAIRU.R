@@ -5,6 +5,9 @@ library(xts) # Library for plotting
 library(pdfetch) #Library for loading FRED data
 library(mFilter) #Library for HP filter
 library(rollRegres) #Library for regression 
+library(flextable) # Library for neat tablemaker
+library(broom) # Library to make data fit into neat tablemaker
+
 
 
 data_pc_raw <- pdfetch_FRED(c("GDPC1", "UNRATE", "CPIAUCSL", "CPILFESL")) #API fetching from FRED
@@ -49,11 +52,47 @@ summary(model2)
 model3 <- lm(infgap ~ unemployment_rate + supply_shock, data = data_pc)
 summary(model3)
 
+model_equation(model3, digits = 4)
+
+
+# Convert the coefficients part of the summary to a data frame
+coefficients_df <- tidy(model3)
+
+coefficients_df$significance <- ifelse(coefficients_df$p.value < 0.001, "***",
+                                       ifelse(coefficients_df$p.value < 0.01, "**",
+                                              ifelse(coefficients_df$p.value < 0.05, "*",
+                                                     "")))
+
+coefficients_df <- coefficients_df %>%
+  dplyr::rename( t.value = statistic)
+  
+
+coefficients_df$estimate <- round(coefficients_df$estimate, 4)
+coefficients_df$std.error <- round(coefficients_df$std.error, 4)
+coefficients_df$t.value <- round(coefficients_df$t.value, 4)
+coefficients_df$p.value <- round(coefficients_df$p.value, 4)
+coefficients_df$term[coefficients_df$term == "(Intercept)"] <- "Intercept"
+coefficients_df$term[coefficients_df$term == "unemployment_rate"] <- "Unemployment Rate"
+coefficients_df$term[coefficients_df$term == "supply_shock"] <- "Supply Shock"
+
+# Create a gt table
+coefficients_table <- flextable(coefficients_df)
+
+# Add a caption note
+note_text <- "Signif. codes: 0 '***' 0.001 '**' 0.01 '*'"
+coefficients_table <- coefficients_table %>%
+  add_footer_lines(note_text) %>% 
+  fontsize(size = 8, part = "footer")
+
+# Print the table
+coefficients_table
+
+#getting rid of NA values
 data1 <- na.omit(data_pc)
 
 pc_rolling <- roll_regres(data1$infgap ~ data1$unemployment_rate + data1$supply_shock, width = 40, do_downdates = TRUE)
-data1$un_pi_gap <- data1$unemployment_rate + data1$infgap/(0.007194*100)
-#Note that 0.007194 was the estimated coefficient of unemployment rate in model 3.
+data1$un_pi_gap <- data1$unemployment_rate + data1$infgap/(0.0072*100)
+#Note that 0.0072 was the estimated coefficient of unemployment rate in model 3.
 plot.xts(data1$un_pi_gap)
 #Get trend using the HP filter with high lambda (much higner than for business cycles frequencies)
 data1_1 <- na.omit(data1)
