@@ -10,7 +10,7 @@ data_GDP_G7 <- data_GDP_G7 %>%
                           "ITA" = "Italy", "JPN" = "Japan",
                           "USA" = "U.S."))
 
-ggplot(data_GDP_G7, aes(x = TIME, y = ex_im_sum, group = Country)) + 
+ggplot(data_GDP_G7, aes(x = TIME, y = ex_im_sum, color =Country, group = Country)) + 
   geom_line(aes(linetype = Country)) +
   theme_bw() +
   labs(x = "Year", y = " Import and Export to GDP (%)")

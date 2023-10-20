@@ -52,7 +52,7 @@ summary(model2)
 model3 <- lm(infgap ~ unemployment_rate + supply_shock, data = data_pc)
 summary(model3)
 
-model_equation(model3, digits = 4)
+#model_equation(model3, digits = 4)
 
 
 # Convert the coefficients part of the summary to a data frame
