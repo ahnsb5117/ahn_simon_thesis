@@ -1,4 +1,4 @@
-#International Inflation Rate
+#G7 Headline Inflation Rate
 library(tidyverse)
 library(tidyquant)
 library(janitor)
