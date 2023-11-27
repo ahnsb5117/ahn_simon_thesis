@@ -98,7 +98,7 @@ plot.xts(data1$un_pi_gap)
 #Get trend using the HP filter with high lambda (much higner than for business cycles frequencies)
 data1_1 <- na.omit(data1)
 
-hp_un_pi_gap <- hpfilter(data1_1$un_pi_gap, freq = 100, type="lambda") # lambda at 100
+hp_un_pi_gap <- hpfilter(data1_1$un_pi_gap, freq = 10000, type="lambda") # lambda at 100
 hp_un_pi_gap_1000 <- hpfilter(data1_1$un_pi_gap, freq = 1000, type="lambda") # lambda at 1000
 
 #data wrangling to adjust for hp filter rowname change 
@@ -118,7 +118,7 @@ data4 <- as.xts(data3)
 data5 <- na.omit(data4)
 
 #Plotting NAIRU
-plot.xts(data5$unemployment_rate, col = "black", lwd = 3, main = "The U.S. NAIRU and Natural Rate of Unemployment", main.timespan = FALSE, lty = 3, ylim = c(2, 14)) #unemployment rate
+plot.xts(data5$unemployment_rate, col = "black", lwd = 3, main = "The U.S. NAIRU and Natural Rate of Unemployment, λ = 10,000", main.timespan = FALSE, lty = 3, ylim = c(2, 14)) #unemployment rate
 addSeries(data5$nairu, on = 1, col = "red", lwd = 1) # NAIRU
 addSeries(data5$NROU, on = 1, col = "blue",lty = 4, lwd = 1) # NROU
 addLegend("topleft", on=1, 
