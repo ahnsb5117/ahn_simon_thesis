@@ -62,8 +62,8 @@ coefficients_df$std.error <- round(coefficients_df$std.error, 4)
 coefficients_df$t.value <- round(coefficients_df$t.value, 4)
 coefficients_df$p.value <- round(coefficients_df$p.value, 4)
 coefficients_df$term[coefficients_df$term == "(Intercept)"] <- "Inflation Gap Intercept"
-coefficients_df$term[coefficients_df$term == "unemployment_rate"] <- "Unemployment Rate"
-coefficients_df$term[coefficients_df$term == "supply_shock"] <- "Supply Shock"
+coefficients_df$term[coefficients_df$term == "unrate"] <- "Unemployment Rate"
+coefficients_df$term[coefficients_df$term == "ss1"] <- "Supply Shock"
 
 # Create a gt table
 coefficients_table <- flextable(coefficients_df)
